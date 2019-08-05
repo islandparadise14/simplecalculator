@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.math.absoluteValue
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,6 +48,10 @@ class MainActivity : AppCompatActivity() {
         buttonMultiply.setOnClickListener { operatorButtonSetting(1,"x") }
         buttonPlus.setOnClickListener { operatorButtonSetting(1,"+") }
         buttonDivision.setOnClickListener { operatorButtonSetting(1,"/") }
+
+        buttonDot.setOnClickListener { DotButtonSetting(buttonDot) }
+        buttonSign.setOnClickListener { SignButtonSetting() }
+        buttonPercent.setOnClickListener { compareIntAndDouble(result.text.toString().toDouble()/100) }
     }
 
     private fun numberButtonSetting(button : Button){
@@ -78,9 +83,30 @@ class MainActivity : AppCompatActivity() {
             "x" -> resultValue = (arg1 * arg2)
             "/" -> if (arg2 != 0.0) resultValue = (arg1 / arg2) else result.text = "오류"
         }
+        compareIntAndDouble(resultValue)
+    }
+
+    private fun compareIntAndDouble(resultValue : Double){
         if (result.text != "오류"){
             if(resultValue-resultValue.toInt()!=0.0) result.text = resultValue.toString()
             else result.text = resultValue.toInt().toString()
+        }
+    }
+
+    private fun DotButtonSetting(button : Button){
+        if(state != 1) if (result.text != "오류") result.text="${result.text}${button.text}" else result.text="0${button.text}"
+        else {
+            result.text = "0${button.text}"
+            state = 2
+        }
+    }
+
+    private fun SignButtonSetting(){
+        var nowValue = result.text.toString().toDouble()
+        if(state != 1) if (result.text != "오류") if(nowValue<0)compareIntAndDouble(nowValue.absoluteValue) else compareIntAndDouble(nowValue*-1)
+        else {
+            result.text = "-0"
+            state = 2
         }
     }
 
